@@ -1,0 +1,118 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model parents {
+  id             String           @id @default(uuid())
+  email          String           @unique
+  name           String
+  password       String
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  deletedAt      DateTime?
+  children       child[]
+  notifications  notifications[]
+  parents_device parents_device[]
+  log_activity   log_activity[]
+}
+
+model parents_device {
+  id          String    @id @default(uuid())
+  parentsId   String
+  deviceToken String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+  parents     parents   @relation(fields: [parentsId], references: [id])
+}
+
+model child_device {
+  id          String    @id @default(uuid())
+  childId     String
+  deviceToken String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+  child       child     @relation(fields: [childId], references: [id], onDelete: Cascade)
+}
+
+model notifications {
+  id        String    @id @default(uuid())
+  parentId  String
+  childId   String
+  logId     String
+  title     String
+  text      String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+  parents   parents   @relation(fields: [parentId], references: [id])
+  child     child     @relation(fields: [childId], references: [id])
+}
+
+model child {
+  id            String          @id @default(uuid())
+  parentsId     String
+  name          String
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  deletedAt     DateTime?
+  parents       parents         @relation(fields: [parentsId], references: [id])
+  notifications notifications[]
+  child_device  child_device[]
+  log_activity  log_activity[]
+}
+
+model log_activity {
+  log_id          String           @id @default(uuid())
+  parentId        String?
+  childId         String
+  web_title       String
+  url             String
+  web_description String
+  detail_url      String
+  grant_access    Boolean?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  deletedAt       DateTime?
+  classified_url  classified_url[]
+  parents         parents?         @relation(fields: [parentId], references: [id])
+  child           child            @relation(fields: [childId], references: [id])
+}
+
+model classified_url {
+  cu_id             Int          @id @default(autoincrement())
+  log_id            String
+  classified_status String?
+  del_status        String?
+  description_raw   String?
+  title_raw         String?
+  url_type          String?
+  description       String?
+  title             String?
+  SVM_desc_label    String?
+  SVM_desc_decfunc  String?
+  SVM_title_label   String?
+  SVM_title_decfunc Float?
+  FINAL_label       String?
+  FINAL_decfunc     String?
+  log_activity      log_activity @relation(fields: [log_id], references: [log_id])
+}
+
+model url_classification {
+  id  Int    @id @default(autoincrement())
+  url String
+  label String
+}
+model internet_positif {
+  id  Int    @id @default(autoincrement())
+  url String
+}
