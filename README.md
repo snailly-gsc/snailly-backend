@@ -24,10 +24,6 @@ or
 ```bash
   yarn install
 ```
-Copy example environment file to new file
-```bash
-  cp .env.example .env
-```
 
 Run Migration and seeder.
 ```bash
