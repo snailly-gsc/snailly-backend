@@ -12,8 +12,7 @@
     "prisma:seed": "ts-node ./src/prisma/seed.ts"
   },
   "repository": {
-    "type": "git",
-    "url": "https://github.com/fajarbh14/hexpharmjaya.git"
+    "type": "git"
   },
   "keywords": [
     "Rest",
