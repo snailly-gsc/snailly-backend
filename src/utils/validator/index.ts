@@ -1,3 +1,5 @@
 export * from './auth'
 export * from './child'
 export * from './log'
+export * from './notification'
+export * from './profile'
